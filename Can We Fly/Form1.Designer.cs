@@ -48,6 +48,9 @@ namespace Can_We_Fly
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.lbl_version = new System.Windows.Forms.Label();
+            this.rchtxtbx_output = new System.Windows.Forms.RichTextBox();
+            this.lbl_metar_speci = new System.Windows.Forms.Label();
+            this.lbl_icao_code = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -116,6 +119,9 @@ namespace Can_We_Fly
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.lbl_icao_code);
+            this.tabPage2.Controls.Add(this.lbl_metar_speci);
+            this.tabPage2.Controls.Add(this.rchtxtbx_output);
             this.tabPage2.Controls.Add(this.btn_metar_workout);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.txtbx_metar_input);
@@ -133,7 +139,7 @@ namespace Can_We_Fly
             this.txtbx_metar_input.Name = "txtbx_metar_input";
             this.txtbx_metar_input.Size = new System.Drawing.Size(1117, 26);
             this.txtbx_metar_input.TabIndex = 0;
-            this.txtbx_metar_input.Text = "METAR EHLE 280925Z AUTO 21009G19KT 060V130 5000 -RA FEW007 BKN014CB BKN017 02/M01" +
+            this.txtbx_metar_input.Text = "METAR EGMJ 280925Z AUTO 21009G19KT 060V130 5000 -RA FEW007 BKN014CB BKN017 02/M01" +
     " Q1001 BECMG 6000";
             // 
             // label1
@@ -246,6 +252,32 @@ namespace Can_We_Fly
             this.lbl_version.TabIndex = 2;
             this.lbl_version.Text = "v....";
             // 
+            // rchtxtbx_output
+            // 
+            this.rchtxtbx_output.Location = new System.Drawing.Point(757, 101);
+            this.rchtxtbx_output.Name = "rchtxtbx_output";
+            this.rchtxtbx_output.Size = new System.Drawing.Size(513, 511);
+            this.rchtxtbx_output.TabIndex = 3;
+            this.rchtxtbx_output.Text = "";
+            // 
+            // lbl_metar_speci
+            // 
+            this.lbl_metar_speci.AutoSize = true;
+            this.lbl_metar_speci.Location = new System.Drawing.Point(17, 68);
+            this.lbl_metar_speci.Name = "lbl_metar_speci";
+            this.lbl_metar_speci.Size = new System.Drawing.Size(94, 20);
+            this.lbl_metar_speci.TabIndex = 4;
+            this.lbl_metar_speci.Text = "Metar/Speci";
+            // 
+            // lbl_icao_code
+            // 
+            this.lbl_icao_code.AutoSize = true;
+            this.lbl_icao_code.Location = new System.Drawing.Point(17, 101);
+            this.lbl_icao_code.Name = "lbl_icao_code";
+            this.lbl_icao_code.Size = new System.Drawing.Size(87, 20);
+            this.lbl_icao_code.TabIndex = 5;
+            this.lbl_icao_code.Text = "ICAO code";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -290,6 +322,9 @@ namespace Can_We_Fly
         private System.Windows.Forms.Label lbl_version;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button btn_exit;
+        private System.Windows.Forms.RichTextBox rchtxtbx_output;
+        private System.Windows.Forms.Label lbl_metar_speci;
+        private System.Windows.Forms.Label lbl_icao_code;
     }
 }
 
