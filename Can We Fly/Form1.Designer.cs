@@ -29,6 +29,7 @@ namespace Can_We_Fly
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -49,8 +50,9 @@ namespace Can_We_Fly
             this.panel7 = new System.Windows.Forms.Panel();
             this.lbl_version = new System.Windows.Forms.Label();
             this.rchtxtbx_output = new System.Windows.Forms.RichTextBox();
-            this.lbl_metar_speci = new System.Windows.Forms.Label();
-            this.lbl_icao_code = new System.Windows.Forms.Label();
+            this.rchtxtbx_results = new System.Windows.Forms.RichTextBox();
+            this.lbl_date_time = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -59,6 +61,7 @@ namespace Can_We_Fly
             this.tableLayoutPanel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel7.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -119,8 +122,7 @@ namespace Can_We_Fly
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.lbl_icao_code);
-            this.tabPage2.Controls.Add(this.lbl_metar_speci);
+            this.tabPage2.Controls.Add(this.rchtxtbx_results);
             this.tabPage2.Controls.Add(this.rchtxtbx_output);
             this.tabPage2.Controls.Add(this.btn_metar_workout);
             this.tabPage2.Controls.Add(this.label1);
@@ -203,7 +205,7 @@ namespace Can_We_Fly
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.btn_exit);
+            this.panel3.Controls.Add(this.lbl_date_time);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(1071, 3);
             this.panel3.Name = "panel3";
@@ -237,6 +239,7 @@ namespace Can_We_Fly
             // 
             // panel7
             // 
+            this.panel7.Controls.Add(this.btn_exit);
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(804, 3);
             this.panel7.Name = "panel7";
@@ -260,23 +263,28 @@ namespace Can_We_Fly
             this.rchtxtbx_output.TabIndex = 3;
             this.rchtxtbx_output.Text = "";
             // 
-            // lbl_metar_speci
+            // rchtxtbx_results
             // 
-            this.lbl_metar_speci.AutoSize = true;
-            this.lbl_metar_speci.Location = new System.Drawing.Point(17, 68);
-            this.lbl_metar_speci.Name = "lbl_metar_speci";
-            this.lbl_metar_speci.Size = new System.Drawing.Size(94, 20);
-            this.lbl_metar_speci.TabIndex = 4;
-            this.lbl_metar_speci.Text = "Metar/Speci";
+            this.rchtxtbx_results.Location = new System.Drawing.Point(5, 46);
+            this.rchtxtbx_results.Name = "rchtxtbx_results";
+            this.rchtxtbx_results.Size = new System.Drawing.Size(735, 607);
+            this.rchtxtbx_results.TabIndex = 8;
+            this.rchtxtbx_results.Text = "";
             // 
-            // lbl_icao_code
+            // lbl_date_time
             // 
-            this.lbl_icao_code.AutoSize = true;
-            this.lbl_icao_code.Location = new System.Drawing.Point(17, 101);
-            this.lbl_icao_code.Name = "lbl_icao_code";
-            this.lbl_icao_code.Size = new System.Drawing.Size(87, 20);
-            this.lbl_icao_code.TabIndex = 5;
-            this.lbl_icao_code.Text = "ICAO code";
+            this.lbl_date_time.AutoSize = true;
+            this.lbl_date_time.Location = new System.Drawing.Point(74, 24);
+            this.lbl_date_time.Name = "lbl_date_time";
+            this.lbl_date_time.Size = new System.Drawing.Size(113, 20);
+            this.lbl_date_time.TabIndex = 0;
+            this.lbl_date_time.Text = "Date and Time";
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
             // 
@@ -296,8 +304,10 @@ namespace Can_We_Fly
             this.panel2.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.panel7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -323,8 +333,9 @@ namespace Can_We_Fly
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button btn_exit;
         private System.Windows.Forms.RichTextBox rchtxtbx_output;
-        private System.Windows.Forms.Label lbl_metar_speci;
-        private System.Windows.Forms.Label lbl_icao_code;
+        private System.Windows.Forms.RichTextBox rchtxtbx_results;
+        private System.Windows.Forms.Label lbl_date_time;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
