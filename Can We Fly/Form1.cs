@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 using Can_We_Fly.metar_items;
 
@@ -23,6 +22,35 @@ namespace Can_We_Fly
 
             lbl_date_time.Text = DateTime.Now.ToString("HH:mm:ss\rdd MMMM yyyy");
 
+            if (File.Exists("metar_data.txt"))
+            {
+                //Add our test text file to the combobox.
+                string[] lineOfContents = File.ReadAllLines("metar_data.txt");
+                foreach (var line in lineOfContents)
+                {
+                    cmbobox_metar_data.Items.Add(line);
+                }
+
+                cmbobox_metar_data.SelectedIndex = 0;
+            }
+
+            // put user text box in focus
+            txtbx_metar_input.Visible = true;
+            cmbobox_metar_data.Visible = false;
+        }
+
+        private void chkbx_user_data_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkbx_user_data.Checked)
+            {
+                txtbx_metar_input.Visible = false;
+                cmbobox_metar_data.Visible = true;
+            }
+            else
+            {
+                txtbx_metar_input.Visible = true;
+                cmbobox_metar_data.Visible = false;
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -38,12 +66,22 @@ namespace Can_We_Fly
         private void btn_metar_workout_Click(object sender, EventArgs e)
         {
             int count = 0;
+            string[] MetarWords = new []{""};
             //http://www.wx-now.com/weather/metardecode
 
             rchtxtbx_results.Clear();
             rchtxtbx_output.Clear();
 
-            string[] MetarWords = txtbx_metar_input.Text.Split(new[] { " " }, StringSplitOptions.None);
+            if ((chkbx_user_data.Checked) && (File.Exists("metar_data.txt")))
+            {
+                MetarWords = cmbobox_metar_data.Text.Split(new[] { " " }, StringSplitOptions.None);
+            }
+            else
+            {
+                MetarWords = txtbx_metar_input.Text.Split(new[] { " " }, StringSplitOptions.None);
+            }
+
+            
 
             
             foreach (string s in MetarWords)
@@ -85,7 +123,7 @@ namespace Can_We_Fly
 
 
             //////////////////////////////////////////////////////////////////////////////////////////
-            //Issuance Time DDHHMMz(UTC)
+            //Issuance Time DDHHMMZ(UTC)
             //280925Z = Date and time
             string timezone = (MetarWords[count].Substring(6, 1).ToUpper() == "Z") ? timezone = "UTC" : timezone = "Unknown";
             rchtxtbx_results.AppendText("Day of month = " + MetarWords[count].Substring(0, 2) + "\rTime = " + MetarWords[count].Substring(2, 2) + ":" + MetarWords[count].Substring(4, 2)
@@ -192,6 +230,6 @@ namespace Can_We_Fly
 
         }
 
-
+        
     }
 }

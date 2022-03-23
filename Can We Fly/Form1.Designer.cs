@@ -53,6 +53,8 @@ namespace Can_We_Fly
             this.rchtxtbx_results = new System.Windows.Forms.RichTextBox();
             this.lbl_date_time = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.cmbobox_metar_data = new System.Windows.Forms.ComboBox();
+            this.chkbx_user_data = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -122,11 +124,13 @@ namespace Can_We_Fly
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.chkbx_user_data);
+            this.tabPage2.Controls.Add(this.cmbobox_metar_data);
+            this.tabPage2.Controls.Add(this.txtbx_metar_input);
             this.tabPage2.Controls.Add(this.rchtxtbx_results);
             this.tabPage2.Controls.Add(this.rchtxtbx_output);
             this.tabPage2.Controls.Add(this.btn_metar_workout);
             this.tabPage2.Controls.Add(this.label1);
-            this.tabPage2.Controls.Add(this.txtbx_metar_input);
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -137,9 +141,9 @@ namespace Can_We_Fly
             // 
             // txtbx_metar_input
             // 
-            this.txtbx_metar_input.Location = new System.Drawing.Point(101, 14);
+            this.txtbx_metar_input.Location = new System.Drawing.Point(101, 12);
             this.txtbx_metar_input.Name = "txtbx_metar_input";
-            this.txtbx_metar_input.Size = new System.Drawing.Size(1117, 26);
+            this.txtbx_metar_input.Size = new System.Drawing.Size(997, 26);
             this.txtbx_metar_input.TabIndex = 0;
             this.txtbx_metar_input.Text = "METAR EGMJ 280925Z AUTO 21009G19KT 060V130 5000 -RA FEW007 BKN014CB BKN017 02/M01" +
     " Q1001 BECMG 6000";
@@ -155,7 +159,7 @@ namespace Can_We_Fly
             // 
             // btn_metar_workout
             // 
-            this.btn_metar_workout.Location = new System.Drawing.Point(1224, 6);
+            this.btn_metar_workout.Location = new System.Drawing.Point(1104, 2);
             this.btn_metar_workout.Name = "btn_metar_workout";
             this.btn_metar_workout.Size = new System.Drawing.Size(97, 46);
             this.btn_metar_workout.TabIndex = 2;
@@ -286,6 +290,25 @@ namespace Can_We_Fly
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // cmbobox_metar_data
+            // 
+            this.cmbobox_metar_data.FormattingEnabled = true;
+            this.cmbobox_metar_data.Location = new System.Drawing.Point(101, 12);
+            this.cmbobox_metar_data.Name = "cmbobox_metar_data";
+            this.cmbobox_metar_data.Size = new System.Drawing.Size(997, 28);
+            this.cmbobox_metar_data.TabIndex = 9;
+            // 
+            // chkbx_user_data
+            // 
+            this.chkbx_user_data.AutoSize = true;
+            this.chkbx_user_data.Location = new System.Drawing.Point(1207, 14);
+            this.chkbx_user_data.Name = "chkbx_user_data";
+            this.chkbx_user_data.Size = new System.Drawing.Size(108, 24);
+            this.chkbx_user_data.TabIndex = 10;
+            this.chkbx_user_data.Text = "User Data";
+            this.chkbx_user_data.UseVisualStyleBackColor = true;
+            this.chkbx_user_data.CheckedChanged += new System.EventHandler(this.chkbx_user_data_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -336,6 +359,8 @@ namespace Can_We_Fly
         private System.Windows.Forms.RichTextBox rchtxtbx_results;
         private System.Windows.Forms.Label lbl_date_time;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.CheckBox chkbx_user_data;
+        private System.Windows.Forms.ComboBox cmbobox_metar_data;
     }
 }
 
