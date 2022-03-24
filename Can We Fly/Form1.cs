@@ -35,21 +35,21 @@ namespace Can_We_Fly
             }
 
             // put user text box in focus
-            txtbx_metar_input.Visible = true;
-            cmbobox_metar_data.Visible = false;
+            txtbx_metar_input.Visible = false;
+            cmbobox_metar_data.Visible = true;
         }
 
         private void chkbx_user_data_CheckedChanged(object sender, EventArgs e)
         {
             if (chkbx_user_data.Checked)
             {
-                txtbx_metar_input.Visible = false;
-                cmbobox_metar_data.Visible = true;
+                txtbx_metar_input.Visible = true;
+                cmbobox_metar_data.Visible = false;
             }
             else
             {
-                txtbx_metar_input.Visible = true;
-                cmbobox_metar_data.Visible = false;
+                txtbx_metar_input.Visible = false;
+                cmbobox_metar_data.Visible = true;
             }
         }
 
@@ -72,7 +72,7 @@ namespace Can_We_Fly
             rchtxtbx_results.Clear();
             rchtxtbx_output.Clear();
 
-            if ((chkbx_user_data.Checked) && (File.Exists("metar_data.txt")))
+            if ((!chkbx_user_data.Checked) && (File.Exists("metar_data.txt")))
             {
                 MetarWords = cmbobox_metar_data.Text.Split(new[] { " " }, StringSplitOptions.None);
             }
@@ -91,6 +91,8 @@ namespace Can_We_Fly
 
             //METAR EGMJ 280925Z AUTO 21009G19KT 060V130 5000 -RA FEW007 BKN014CB BKN017 02/M01 Q1001 BECMG 6000
 
+
+            #region Identification
 
             ////////////////////////////////////////////////////////////////////////////////////////////////
             /*
@@ -153,83 +155,144 @@ namespace Can_We_Fly
 
             count++;
 
-            //Wind
-            //21009G19KT 060V130 = Wind
-            rchtxtbx_results.AppendText("Mean wind direction = " + MetarWords[count].Substring(0,3) + "°\r"+
-                                        "Variable between " + MetarWords[count+1].Substring(0, 3) + "° and" +
-                                        MetarWords[count+1].Substring(4, 3) + "°\r" +
-                                        "Average wind speed = " + MetarWords[count].Substring(3, 2) + MetarWords[count].Substring(8, 2).ToLower() + "\r" +
-                                        "Gusting to " + MetarWords[count].Substring(6, 2) + MetarWords[count].Substring(8, 2).ToLower() + "\r" +
-                                                      "\r\r");
+            #endregion
+
+            #region Wind
+
+
+            ////////////////////////////////////////
+            /// Wind direction/speed
+            /////////////////////////////////////// 
+            
+            // Max only given if >= 10KT greater than the mean.VRB = variable. 00000KT = calm.
+            // Wind direction is given in degrees true.
             // G = Gusts
             // VRB = Variable direction
-            // V = varying from 060 to 130 
-
             // KT = knots, KMH = kilometers / hour, MPS = meters / second
 
-            // 00000KT represents a calm wind
-            // VRB004KT (variable direction blowing at four knots).
+
+            if (MetarWords[count].Substring(0, 3).ToUpper() == "VRB")
+            {
+                //VRB02KT
+
+                rchtxtbx_results.AppendText("Variable Wind with speed averaging " + MetarWords[count].Substring(3, 2) +
+                                            MetarWords[count].Substring(5, 2).ToLower() + "\r\r");
+            }
+            else if (MetarWords[count].Substring(0, 5) == "00000")
+            {
+                //00000KT
+
+                rchtxtbx_results.AppendText("No Wind therefore conditions are calm \r\r");
+            }
+            else if (MetarWords[count].Substring(5, 1).ToUpper() == "G")
+            {
+                // 21009G19KT 
+
+                rchtxtbx_results.AppendText("Mean wind direction = " + MetarWords[count].Substring(0, 3) + "°\r" +
+                                            "Average wind speed = " + MetarWords[count].Substring(3, 2) + MetarWords[count].Substring(8, 2).ToLower() + "\r" +
+                                            "Gusting to " + MetarWords[count].Substring(6, 2) + MetarWords[count].Substring(8, 2).ToLower() + "\r" +
+                                            "\r\r");
+
+            }
+            else if (MetarWords[count].Length == 7)
+            {
+                // 29001KT
+
+                rchtxtbx_results.AppendText("Mean wind direction = " + MetarWords[count].Substring(0, 3) + "°\r" +
+                                            "Average wind speed = " + MetarWords[count].Substring(3, 2) + MetarWords[count].Substring(5, 2).ToLower() + "\r" +
+                                            "\r\r");
+            }
+            else
+            {
+                rchtxtbx_results.AppendText("Wind Unknown");
+            }
+
+            count++;
+
+            ///////////////////////////////////////////////////////
+            /// Extreme direction variance
+            ///
+            /// Not always given so you need to check if it is 
+            /////////////////////////////////////////////////////// 
+
+            // 060V130
+            // V = varying from 060 to 130
+
+            if ((MetarWords[count].Substring(3, 1).ToUpper() == "V") && (MetarWords[count].Length == 7))
+            {
+
+                rchtxtbx_results.AppendText("Wind direction variable between " + MetarWords[count].Substring(0, 3) + "° and" +
+                                            MetarWords[count].Substring(4, 3) + "°" +
+                                           "\r\r");
+                count++;
+            }
+
+
+
+            #endregion
+
+
+                #region Visibility
+
+
+                // Horizontal Visibility
+                //5000
+
+
+
+                #endregion
+
+
+
+
+
+                /*
+                 * Present Weather (Constructed sequentially):               
+                   ·         Intensity               
+                   ·         Descriptor               
+                   ·         Precipitation (Dominant type is listed first if more than one type reported)               
+                   ·         Obscuration               
+                   ·         Other
+                 */
+                //-RA
 
 
 
 
 
 
-            // Horizontal Visibility
-            //5000
+                //FEW007
 
 
 
 
-
-
-            /*
-             * Present Weather (Constructed sequentially):               
-               ·         Intensity               
-               ·         Descriptor               
-               ·         Precipitation (Dominant type is listed first if more than one type reported)               
-               ·         Obscuration               
-               ·         Other
-             */
-            //-RA
+                //((SkyCover??????))
+                //BKN014CB BKN017
 
 
 
+                //Terperature/Dewpoint (whole °C) (preceded by M=minus)
+                //02/M01
 
 
 
-            //FEW007
+                //Altimeter setting (QNH) and indicator (A=InHg, Q=hPa)
+                //Q1001
 
 
 
-
-            //((SkyCover??????))
-            //BKN014CB BKN017
-
-
-
-            //Terperature/Dewpoint (whole °C) (preceded by M=minus)
-            //02/M01
-
-
-
-            //Altimeter setting (QNH) and indicator (A=InHg, Q=hPa)
-            //Q1001
-
-
-
-            //Trend Forecast (2 hours from time of observation) 
-            //BECMG
+                //Trend Forecast (2 hours from time of observation) 
+                //BECMG
 
 
 
 
-            //6000
+                //6000
 
 
 
-        }
+            }
 
-        
+
     }
 }
