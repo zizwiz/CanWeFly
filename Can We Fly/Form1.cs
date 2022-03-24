@@ -232,66 +232,99 @@ namespace Can_We_Fly
             #endregion
 
 
-                #region Visibility
+            #region Visibility
 
 
-                // Horizontal Visibility
-                //5000
+            // Horizontal Visibility
+            //5000
+            //1200SW
 
 
+            //0000 = 'less than 50 metres'
+            //9999 = 'ten kilometres or more'. N
+            //The minimum visibility is also included alongside the prevailing visibility when the visibility in one 
+            // direction, which is not the prevailing visibility, is less than 1500 metres or less than 50% of the 
+            // prevailing visibility. A direction is also added as one of the eight points of the compass.
 
-                #endregion
-
-
-
-
-
-                /*
-                 * Present Weather (Constructed sequentially):               
-                   ·         Intensity               
-                   ·         Descriptor               
-                   ·         Precipitation (Dominant type is listed first if more than one type reported)               
-                   ·         Obscuration               
-                   ·         Other
-                 */
-                //-RA
-
-
-
-
-
-
-                //FEW007
-
-
-
-
-                //((SkyCover??????))
-                //BKN014CB BKN017
-
-
-
-                //Terperature/Dewpoint (whole °C) (preceded by M=minus)
-                //02/M01
-
-
-
-                //Altimeter setting (QNH) and indicator (A=InHg, Q=hPa)
-                //Q1001
-
-
-
-                //Trend Forecast (2 hours from time of observation) 
-                //BECMG
-
-
-
-
-                //6000
-
-
-
+            if (MetarWords[count].Length==4)
+            {
+                if (MetarWords[count] == "0000")
+                {
+                    rchtxtbx_results.AppendText("Visibility is less than 50m\r\r");
+                }
+                else if (MetarWords[count] == "9999")
+                {
+                    rchtxtbx_results.AppendText("Visibility is greater than 10km\r\r");
+                }
+                else if ((int.Parse(MetarWords[count]) > 0000) && (int.Parse(MetarWords[count]) < 9999))
+                {
+                    rchtxtbx_results.AppendText("Visibility is " + MetarWords[count] + "m\r\r");
+                }
+                else
+                {
+                    rchtxtbx_results.AppendText("Visibility Unknown\r\r");
+                }
             }
+            else if (MetarWords[count].Length == 6)
+            {
+                rchtxtbx_results.AppendText("Visibility is " + MetarWords[count].Substring(0,4) + "m" +
+                                            " in the " + MetarWords[count].Substring(5, 2) + " direction.\r\r");
+            }
+            else
+            {
+                rchtxtbx_results.AppendText("Visibility Unknown\r\r");
+            }
+
+            count++;
+
+            #endregion
+
+            /*
+             * Present Weather (Constructed sequentially):               
+               ·         Intensity               
+               ·         Descriptor               
+               ·         Precipitation (Dominant type is listed first if more than one type reported)               
+               ·         Obscuration               
+               ·         Other
+             */
+            //-RA
+
+
+
+
+
+
+            //FEW007
+
+
+
+
+            //((SkyCover??????))
+            //BKN014CB BKN017
+
+
+
+            //Terperature/Dewpoint (whole °C) (preceded by M=minus)
+            //02/M01
+
+
+
+            //Altimeter setting (QNH) and indicator (A=InHg, Q=hPa)
+            //Q1001
+
+
+
+            //Trend Forecast (2 hours from time of observation) 
+            //BECMG
+
+
+
+
+            //6000
+
+
+
+        }
 
 
     }
