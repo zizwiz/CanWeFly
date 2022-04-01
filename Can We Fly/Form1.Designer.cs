@@ -55,6 +55,7 @@ namespace Can_We_Fly
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.cmbobox_metar_data = new System.Windows.Forms.ComboBox();
             this.chkbx_user_data = new System.Windows.Forms.CheckBox();
+            this.lbl_DST_setting = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -124,6 +125,7 @@ namespace Can_We_Fly
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.lbl_DST_setting);
             this.tabPage2.Controls.Add(this.chkbx_user_data);
             this.tabPage2.Controls.Add(this.cmbobox_metar_data);
             this.tabPage2.Controls.Add(this.txtbx_metar_input);
@@ -261,7 +263,7 @@ namespace Can_We_Fly
             // 
             // rchtxtbx_output
             // 
-            this.rchtxtbx_output.Location = new System.Drawing.Point(757, 101);
+            this.rchtxtbx_output.Location = new System.Drawing.Point(757, 133);
             this.rchtxtbx_output.Name = "rchtxtbx_output";
             this.rchtxtbx_output.Size = new System.Drawing.Size(513, 511);
             this.rchtxtbx_output.TabIndex = 3;
@@ -308,6 +310,15 @@ namespace Can_We_Fly
             this.chkbx_user_data.Text = "User Data";
             this.chkbx_user_data.UseVisualStyleBackColor = true;
             this.chkbx_user_data.CheckedChanged += new System.EventHandler(this.chkbx_user_data_CheckedChanged);
+            // 
+            // lbl_DST_setting
+            // 
+            this.lbl_DST_setting.AutoSize = true;
+            this.lbl_DST_setting.Location = new System.Drawing.Point(806, 109);
+            this.lbl_DST_setting.Name = "lbl_DST_setting";
+            this.lbl_DST_setting.Size = new System.Drawing.Size(51, 20);
+            this.lbl_DST_setting.TabIndex = 12;
+            this.lbl_DST_setting.Text = "label2";
             // 
             // Form1
             // 
@@ -361,6 +372,7 @@ namespace Can_We_Fly
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.CheckBox chkbx_user_data;
         private System.Windows.Forms.ComboBox cmbobox_metar_data;
+        private System.Windows.Forms.Label lbl_DST_setting;
     }
 }
 
