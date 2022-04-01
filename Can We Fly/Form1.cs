@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Can_We_Fly.metar_items;
@@ -20,8 +19,7 @@ namespace Can_We_Fly
         private void Form1_Load(object sender, EventArgs e)
         {
             tabControl1.SelectedIndex = 2;
-            lbl_version.Text = "v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
-
+            
             //Get the data file from resources and write to file in same dir as the app.
             File.WriteAllText("airport_data.xml", Properties.Resources.airport_data);
 
@@ -101,6 +99,10 @@ namespace Can_We_Fly
 
             #region Identification
 
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+            rchtxtbx_results.AppendText("Identification\r");
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
+
             ////////////////////////////////////////////////////////////////////////////////////////////////
             /*
              * Message Type               
@@ -173,8 +175,13 @@ namespace Can_We_Fly
             //////////////////////////////////////////////////////////////////////////////////////////
             //Report Type
             //AUTO = Report Type
+            //////////////////////////////////////////////////////////////////////////////////////////
             if (MetarWords[count].Length <= 4)
             {
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+                rchtxtbx_results.AppendText("Report Type\r");
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
+
                 switch (MetarWords[count].ToUpper())
                 {
                     case "COR":
@@ -201,6 +208,9 @@ namespace Can_We_Fly
 
             #region Wind
 
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+            rchtxtbx_results.AppendText("Wind\r");
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
             ////////////////////////////////////////
             /// Wind direction/speed
@@ -286,7 +296,9 @@ namespace Can_We_Fly
 
 
             #region Visibility
-
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+            rchtxtbx_results.AppendText("Visibility\r");
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
             // Horizontal Visibility
             //5000
@@ -339,6 +351,10 @@ namespace Can_We_Fly
             #endregion
 
             #region present_weather
+
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+            rchtxtbx_results.AppendText("Present Weather\r");
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////
             /// Present Weather (Constructed sequentially):               
@@ -403,6 +419,10 @@ namespace Can_We_Fly
                 count++;
 
             }
+            else
+            {
+                rchtxtbx_results.AppendText("Unknown\r\r");
+            }
 
 
 
@@ -420,6 +440,15 @@ namespace Can_We_Fly
 
             #region Cloud
 
+            //find the pressure and come one back to find temperature
+            int pressurecount = FindPressure(MetarWords);
+
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+            rchtxtbx_results.AppendText("Cloud\r");
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
+
+            int EndOfClouds = pressurecount - 2;
+
             /////////////////////////////////////////////////////////////////////////////////////////////
             /// Cloud types
             ///
@@ -435,7 +464,7 @@ namespace Can_We_Fly
             //FEW007 BKN014CB BKN017
 
 
-
+            rchtxtbx_results.AppendText("Unknown\r\r");
 
             //Amount in eights(octas)
             //SKC = Sky Clear(clear below 12, 000 for ASOS / AWOS)
@@ -455,19 +484,31 @@ namespace Can_We_Fly
 
             #region cavok
 
+            if (MetarWords[pressurecount - 2].ToUpper() == "CAVOK")
+            {
+                rchtxtbx_results.SelectionFont =
+                    new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+                rchtxtbx_results.AppendText("Cavok\r");
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
+                // Ceiling and visibility OK
+                // Visibility greater or equal to 10 km and the lowest visibility is not reported, no cumulonimbus or 
+                // towering cumulus, no cloud below 5000 ft or highest MSA(greater) and no weather significant to
+                // aviation.
+                rchtxtbx_results.AppendText("Ceiling and visibility OK\r\r");
+            }
 
             #endregion
-
-
-
-
+            
 
 
             #region temp_dew_point
 
-            //find the pressure and come one back to find temperature
-            int pressurecount = FindPressure(MetarWords);
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+            rchtxtbx_results.AppendText("Temperature and Dew Point\r");
+            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
+
+            
 
 
             //////////////////////////////////////////////////////////////////////////
@@ -550,6 +591,10 @@ namespace Can_We_Fly
                                                          32), 2);
 
                 rchtxtbx_results.AppendText("Windchill = " + windChill.ToString() + "°C\r\r");
+            }
+            else
+            {
+                rchtxtbx_results.AppendText("Unknown\r\r");
             }
 
             #endregion

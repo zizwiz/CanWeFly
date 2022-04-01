@@ -48,7 +48,6 @@ namespace Can_We_Fly
             this.panel5 = new System.Windows.Forms.Panel();
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.lbl_version = new System.Windows.Forms.Label();
             this.rchtxtbx_output = new System.Windows.Forms.RichTextBox();
             this.rchtxtbx_results = new System.Windows.Forms.RichTextBox();
             this.lbl_date_time = new System.Windows.Forms.Label();
@@ -64,7 +63,6 @@ namespace Can_We_Fly
             this.tableLayoutPanel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.panel7.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -211,7 +209,7 @@ namespace Can_We_Fly
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.lbl_date_time);
+            this.panel3.Controls.Add(this.btn_exit);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(1071, 3);
             this.panel3.Name = "panel3";
@@ -220,7 +218,7 @@ namespace Can_We_Fly
             // 
             // panel4
             // 
-            this.panel4.Controls.Add(this.lbl_version);
+            this.panel4.Controls.Add(this.lbl_date_time);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(3, 3);
             this.panel4.Name = "panel4";
@@ -245,21 +243,11 @@ namespace Can_We_Fly
             // 
             // panel7
             // 
-            this.panel7.Controls.Add(this.btn_exit);
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(804, 3);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(261, 68);
             this.panel7.TabIndex = 4;
-            // 
-            // lbl_version
-            // 
-            this.lbl_version.AutoSize = true;
-            this.lbl_version.Location = new System.Drawing.Point(86, 24);
-            this.lbl_version.Name = "lbl_version";
-            this.lbl_version.Size = new System.Drawing.Size(32, 20);
-            this.lbl_version.TabIndex = 2;
-            this.lbl_version.Text = "v....";
             // 
             // rchtxtbx_output
             // 
@@ -338,10 +326,8 @@ namespace Can_We_Fly
             this.panel2.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            this.panel7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -363,7 +349,6 @@ namespace Can_We_Fly
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Label lbl_version;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button btn_exit;
         private System.Windows.Forms.RichTextBox rchtxtbx_output;
