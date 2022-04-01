@@ -96,6 +96,15 @@ namespace Can_We_Fly
 
             //METAR EGMJ 280925Z AUTO 21009G19KT 060V130 5000 -RA FEW007 BKN014CB BKN017 02/M01 Q1001 BECMG 6000
 
+            ////////////////////////////////////////////////////////
+            ///  If we have the word CAVOK then we do not have
+            /// Visibility or Cloud Groups.
+            ///
+            /// We check to see is we have CAVOK in the Metar or not
+            ///////////////////////////////////////////////////////// 
+
+            bool CAVOKFlag = FindCAVOK(MetarWords);
+
 
             #region Identification
 
@@ -296,65 +305,72 @@ namespace Can_We_Fly
 
 
             #region Visibility
-            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
-            rchtxtbx_results.AppendText("Visibility\r");
-            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
-            // Horizontal Visibility
-            //5000
-            //1200SW
-
-
-            //0000 = 'less than 50 metres'
-            //9999 = 'ten kilometres or more'. N
-            //The minimum visibility is also included alongside the prevailing visibility when the visibility in one 
-            // direction, which is not the prevailing visibility, is less than 1500 metres or less than 50% of the 
-            // prevailing visibility. A direction is also added as one of the eight points of the compass.
-
-            if (MetarWords[count].Length == 4)
+            if (!CAVOKFlag) //if we find the word CAVOK in the METAR then we omit this section
             {
-                if (MetarWords[count] == "0000")
+                rchtxtbx_results.SelectionFont =
+                    new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+                rchtxtbx_results.AppendText("Visibility\r");
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
+
+                // Horizontal Visibility
+                //5000
+                //1200SW
+
+
+                //0000 = 'less than 50 metres'
+                //9999 = 'ten kilometres or more'. N
+                //The minimum visibility is also included alongside the prevailing visibility when the visibility in one 
+                // direction, which is not the prevailing visibility, is less than 1500 metres or less than 50% of the 
+                // prevailing visibility. A direction is also added as one of the eight points of the compass.
+
+                if (MetarWords[count].Length == 4)
                 {
-                    rchtxtbx_results.AppendText("Visibility is less than 50m\r\r");
+                    if (MetarWords[count] == "0000")
+                    {
+                        rchtxtbx_results.AppendText("Visibility is less than 50m\r\r");
+                    }
+                    else if (MetarWords[count] == "9999")
+                    {
+                        rchtxtbx_results.AppendText("Visibility is greater than 10km\r\r");
+                    }
+                    else if (MetarWords[count].Substring(MetarWords[count].Length - 1, 1).ToUpper() == "M")
+                    {
+                        //In visibility, M indicates "less than"
+                        rchtxtbx_results.AppendText("Visibility is less than " +
+                                                    MetarWords[count].Substring(0, MetarWords[count].Length - 1) +
+                                                    "m\r\r");
+                    }
+                    else if ((int.Parse(MetarWords[count]) > 0000) && (int.Parse(MetarWords[count]) < 9999))
+                    {
+                        rchtxtbx_results.AppendText("Visibility is " + MetarWords[count] + "m\r\r");
+                    }
+                    else
+                    {
+                        rchtxtbx_results.AppendText("Visibility Unknown\r\r");
+                    }
                 }
-                else if (MetarWords[count] == "9999")
+                else if (MetarWords[count].Length == 6)
                 {
-                    rchtxtbx_results.AppendText("Visibility is greater than 10km\r\r");
-                }
-                else if (MetarWords[count].Substring(MetarWords[count].Length - 1, 1).ToUpper() == "M")
-                {
-                    //In visibility, M indicates "less than"
-                    rchtxtbx_results.AppendText("Visibility is less than " +
-                                                MetarWords[count].Substring(0, MetarWords[count].Length - 1) + "m\r\r");
-                }
-                else if ((int.Parse(MetarWords[count]) > 0000) && (int.Parse(MetarWords[count]) < 9999))
-                {
-                    rchtxtbx_results.AppendText("Visibility is " + MetarWords[count] + "m\r\r");
+                    rchtxtbx_results.AppendText("Visibility is " + MetarWords[count].Substring(0, 4) + "m" +
+                                                " in the " + MetarWords[count].Substring(5, 2) + " direction.\r\r");
                 }
                 else
                 {
                     rchtxtbx_results.AppendText("Visibility Unknown\r\r");
                 }
+
+                count++;
+
+                #endregion
+
+                #region present_weather
+
+                rchtxtbx_results.SelectionFont =
+                    new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+                rchtxtbx_results.AppendText("Present Weather\r");
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
             }
-            else if (MetarWords[count].Length == 6)
-            {
-                rchtxtbx_results.AppendText("Visibility is " + MetarWords[count].Substring(0, 4) + "m" +
-                                            " in the " + MetarWords[count].Substring(5, 2) + " direction.\r\r");
-            }
-            else
-            {
-                rchtxtbx_results.AppendText("Visibility Unknown\r\r");
-            }
-
-            count++;
-
-            #endregion
-
-            #region present_weather
-
-            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
-            rchtxtbx_results.AppendText("Present Weather\r");
-            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////
             /// Present Weather (Constructed sequentially):               
@@ -373,13 +389,7 @@ namespace Can_We_Fly
             string qualifier = "Moderate ";
             bool flag = false;
 
-
-            //if (MetarWords[count].Length > 2)
-            //{
-            //    string isItClouds = MetarWords[count].Substring(0, 3);
-            //} 
-
-
+            
             if ((MetarWords[count].Substring(index, 1) == "+") || (MetarWords[count].Substring(index, 1) == "-"))
             {
                 switch (MetarWords[count].Substring(index, 1))
@@ -423,18 +433,7 @@ namespace Can_We_Fly
             {
                 rchtxtbx_results.AppendText("Unknown\r\r");
             }
-
-
-
-
-
-
-
-
-
-
-
-
+            
             #endregion
 
 
@@ -443,48 +442,65 @@ namespace Can_We_Fly
             //find the pressure and come one back to find temperature
             int pressurecount = FindPressure(MetarWords);
 
-            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
-            rchtxtbx_results.AppendText("Cloud\r");
-            rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
-
-            int EndOfClouds = pressurecount - 2;
-
-            /////////////////////////////////////////////////////////////////////////////////////////////
-            /// Cloud types
-            ///
-            /// FEW='few' (1-2 oktas), SCT='Scattered' (3-4 oktas), BKN='Broken' (5-7 oktas), OVC='Overcast', 
-            /// NSC = 'No significant cloud'(none below 5000ft and no TCU or CB).
-            /// There are only two cloud types reported; TCU = towering cumulus and CB = cumulonimbus.VV
-            /// ='state of sky obscured' (cloud  base not discernable): Figures in lieu of '///' give vertical
-            /// visibility in hundreds of feet.Up to  three, but occasionally more, cloud groups may be reported.
-            /// Cloud heights are given in feet above airfield height.
-            /// Cloud amounts are measured in oktas - one okta = one eighth of cloud cover.
-            ////////////////////////////////////////////////////////////////////////////////////////////
-            /// 
-            //FEW007 BKN014CB BKN017
+            int cloudCount = pressurecount - 1 - count;
 
 
-            rchtxtbx_results.AppendText("Unknown\r\r");
+            if (!CAVOKFlag)  //if we find the word CAVOK in the METAR then we omit this section
+            {
+                rchtxtbx_results.SelectionFont =
+                    new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+                rchtxtbx_results.AppendText("Cloud\r");
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
-            //Amount in eights(octas)
-            //SKC = Sky Clear(clear below 12, 000 for ASOS / AWOS)
-            //NSC = No significant clouds
-            //FEW = Few(1 / 8 to 2 / 8 sky cover)
-            //SCT = Scattered(3 / 8 to 4 / 8 sky cover)
-            //BKN = Broken(5 / 8 to 7 / 8 sky cover)
-            //OVC = Overcast(8 / 8 sky cover)
-            //NCD = No cloud detected 
+                int EndOfClouds = pressurecount - 2;
 
-            ////clouds
-            //TCU = towering cumulus 
-            //CB = cumulonimbus
+                /////////////////////////////////////////////////////////////////////////////////////////////
+                /// Cloud types
+                ///
+                /// FEW='few' (1-2 oktas), SCT='Scattered' (3-4 oktas), BKN='Broken' (5-7 oktas), OVC='Overcast', 
+                /// NSC = 'No significant cloud'(none below 5000ft and no TCU or CB).
+                /// There are only two cloud types reported; TCU = towering cumulus and CB = cumulonimbus.VV
+                /// ='state of sky obscured' (cloud  base not discernable): Figures in lieu of '///' give vertical
+                /// visibility in hundreds of feet.Up to  three, but occasionally more, cloud groups may be reported.
+                /// Cloud heights are given in feet above airfield height.
+                /// Cloud amounts are measured in oktas - one okta = one eighth of cloud cover.
+                ////////////////////////////////////////////////////////////////////////////////////////////
+                /// 
+                //FEW007 BKN014CB BKN017
+
+
+                for (int i = 0; i < cloudCount; i++)
+                {
+                    if (Clouds.CheckIfClouds(MetarWords[count + i]))
+                    {
+                        rchtxtbx_results.AppendText(Clouds.GetCloudInfo(MetarWords[count + i]) + "\r");
+                    }
+                }
+
+                rchtxtbx_results.AppendText("\r");
+
+
+
+                //Amount in eights(octas)
+                //SKC = Sky Clear(clear below 12, 000 for ASOS / AWOS)
+                //NSC = No significant clouds
+                //FEW = Few(1 / 8 to 2 / 8 sky cover)
+                //SCT = Scattered(3 / 8 to 4 / 8 sky cover)
+                //BKN = Broken(5 / 8 to 7 / 8 sky cover)
+                //OVC = Overcast(8 / 8 sky cover)
+                //NCD = No cloud detected 
+
+                ////clouds
+                //TCU = towering cumulus 
+                //CB = cumulonimbus
+            }
 
             #endregion
 
 
             #region cavok
 
-            if (MetarWords[pressurecount - 2].ToUpper() == "CAVOK")
+            if (CAVOKFlag)
             {
                 rchtxtbx_results.SelectionFont =
                     new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
@@ -633,6 +649,24 @@ namespace Can_We_Fly
 
 
 
+        }
+
+        // Does METAR have the word CAVOK in it?
+        private static bool FindCAVOK(string[] data)
+        {
+            bool flag = false;
+            string stringToCheck1 = "CAVOK";
+
+            foreach (string s in data) // looking for Q
+            {
+                if (s.ToUpper().Contains(stringToCheck1))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            return flag;
         }
 
         private static int FindPressure(string[] data)
