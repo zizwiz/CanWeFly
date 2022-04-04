@@ -105,6 +105,14 @@ namespace Can_We_Fly
 
             bool CAVOKFlag = FindCAVOK(MetarWords);
 
+            if (InMaintenance(MetarWords))
+            {
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+                rchtxtbx_results.AppendText("This Automated Station needs some maintenance, proceed with caution and " +
+                                            "check the readings rather than accept them.\r\r\r");
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
+            }
+
 
             #region Identification
 
@@ -405,15 +413,18 @@ namespace Can_We_Fly
                         index++;
                         break;
                 }
-
-                rchtxtbx_results.AppendText(qualifier);
-
             }
             //is it cloud or still present weather
-            else if ((!flag) && (MetarWords[count].Length > 2) &&
-                     (Clouds.CheckIfClouds(MetarWords[count].Substring(0, 3))))
+            else if ((!flag) && (MetarWords[count].Length == 2))
             {
+                do
+                {
+                    rchtxtbx_results.AppendText(qualifier +
+                                                PresentWeather.GetPresentWeather(MetarWords[count].Substring(index, 2)) + "\r\r");
+                    index += 2;
+                } while (index < MetarWords[count].Length);
 
+                count++;
             }
 
 
@@ -421,7 +432,7 @@ namespace Can_We_Fly
             {
                 do
                 {
-                    rchtxtbx_results.AppendText(
+                    rchtxtbx_results.AppendText(qualifier + 
                         PresentWeather.GetPresentWeather(MetarWords[count].Substring(index, 2)) + "\r\r");
                     index += 2;
                 } while (index < MetarWords[count].Length);
@@ -471,10 +482,10 @@ namespace Can_We_Fly
 
                 for (int i = 0; i < cloudCount; i++)
                 {
-                    if (Clouds.CheckIfClouds(MetarWords[count + i]))
-                    {
+                    //if (Clouds.CheckIfClouds(MetarWords[count + i]))
+                  // {
                         rchtxtbx_results.AppendText(Clouds.GetCloudInfo(MetarWords[count + i]) + "\r");
-                    }
+                   // }
                 }
 
                 rchtxtbx_results.AppendText("\r");
@@ -658,6 +669,23 @@ namespace Can_We_Fly
             string stringToCheck1 = "CAVOK";
 
             foreach (string s in data) // looking for Q
+            {
+                if (s.ToUpper().Contains(stringToCheck1))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            return flag;
+        }
+
+        private static bool InMaintenance(string[] data)
+        {
+            bool flag = false;
+            string stringToCheck1 = "$";
+
+            foreach (string s in data) // looking for $ 
             {
                 if (s.ToUpper().Contains(stringToCheck1))
                 {
