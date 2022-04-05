@@ -58,6 +58,7 @@
     <Compile Include="metar_items\Clouds.cs" />
     <Compile Include="metar_items\icao_numbers.cs" />
     <Compile Include="metar_items\PresentWeather.cs" />
+    <Compile Include="metar_items\TrendForecast.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

@@ -263,7 +263,7 @@ namespace Can_We_Fly
                 rchtxtbx_results.AppendText("Mean wind direction = " + MetarWords[count].Substring(0, 3) + "°\r" +
                                             "Average wind speed = " + MetarWords[count].Substring(3, 2) +
                                             MetarWords[count].Substring(8, 2).ToLower() + "\r" +
-                                            "Gusting to " + MetarWords[count].Substring(6, 2) +
+                                            "max " + MetarWords[count].Substring(6, 2) +
                                             MetarWords[count].Substring(8, 2).ToLower() + "\r" +
                                             "\r\r");
 
@@ -306,8 +306,6 @@ namespace Can_We_Fly
                                             "\r\r");
                 count++;
             }
-
-
 
             #endregion
 
@@ -393,7 +391,7 @@ namespace Can_We_Fly
             ///////////////////////////////////////////////////////////////////////////////////////////////////////
             //-RA
 
-            int index = 0;
+           int index = 0;
             string qualifier = "Moderate ";
             bool flag = false;
 
@@ -440,13 +438,10 @@ namespace Can_We_Fly
                 count++;
 
             }
-            else
-            {
-                rchtxtbx_results.AppendText("Unknown\r\r");
-            }
-            
-            #endregion
 
+
+            #endregion
+            
 
             #region Cloud
 
@@ -650,7 +645,25 @@ namespace Can_We_Fly
                 rchtxtbx_results.AppendText("QNH = Unknown\r\r");
             }
 
-            //Trend Forecast (2 hours from time of observation) 
+
+            #region Trend Forecast (2 hours from time of observation) 
+
+            //pressurecount
+            count = 1;
+            int TrendCount = 0; 
+
+            do
+            {
+                TrendCount = pressurecount + count;
+                rchtxtbx_results.AppendText(TrendForecast.CheckTrendForecast(MetarWords[TrendCount]));
+                count++;
+
+            } while (TrendCount+1 < MetarWords.Length);
+
+            
+
+            
+            
             //BECMG
 
 
@@ -658,7 +671,7 @@ namespace Can_We_Fly
 
             //6000
 
-
+            #endregion
 
         }
 
