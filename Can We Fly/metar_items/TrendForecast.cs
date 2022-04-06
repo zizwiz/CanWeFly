@@ -1,4 +1,6 @@
 ﻿
+using Can_We_Fly.common_items;
+
 namespace Can_We_Fly.metar_items
 {
     class TrendForecast
@@ -32,6 +34,10 @@ namespace Can_We_Fly.metar_items
                     // Recent weather
                     //RETS 'recent thunderstorm' RE = Recent, weather codes given above. Up to three groups may be present.
                     answer = "Recent " + PresentWeather.GetPresentWeather(trend.Substring(2, 2)) + "\r";
+                }
+                else if (utils.IsItNumber(trend))
+                {
+                    answer = trend + "m\r";
                 }
                 else
                 {
@@ -80,12 +86,21 @@ namespace Can_We_Fly.metar_items
             }
             else
             {
-                answer = "Unknown item = " + trend + "\r";
+                if (Clouds.CheckIfClouds(trend.Substring(0,3)))
+                {
+                    //clouds
+                    answer = Clouds.GetCloudInfo(trend);
+
+                }
+                else
+                {
+                    answer = "Unknown item = " + trend + "\r";
+                }
+                
             }
 
 
-            // SCT015=      3-4 oktas 1500 ft.
-
+            
 
             // Wind shear
             //WS RWY24 

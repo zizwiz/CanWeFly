@@ -98,7 +98,9 @@
                 case "TCU":
                     answer = "Cloudtype = Towering Cumulus\r";
                     break;
-
+                case "=":
+                    answer = "\r";
+                    break;
                 default:
                     answer = "Unknown cloud type\r";
                     break;

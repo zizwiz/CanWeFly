@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using Can_We_Fly.common_items;
 using Can_We_Fly.metar_items;
 
 namespace Can_We_Fly
@@ -19,7 +20,7 @@ namespace Can_We_Fly
         private void Form1_Load(object sender, EventArgs e)
         {
             tabControl1.SelectedIndex = 2;
-            
+
             //Get the data file from resources and write to file in same dir as the app.
             File.WriteAllText("airport_data.xml", Properties.Resources.airport_data);
 
@@ -103,9 +104,9 @@ namespace Can_We_Fly
             /// We check to see is we have CAVOK in the Metar or not
             ///////////////////////////////////////////////////////// 
 
-            bool CAVOKFlag = FindCAVOK(MetarWords);
+            bool CAVOKFlag = utils.FindCAVOK(MetarWords);
 
-            if (InMaintenance(MetarWords))
+            if (utils.InMaintenance(MetarWords))
             {
                 rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
                 rchtxtbx_results.AppendText("This Automated Station needs some maintenance, proceed with caution and " +
@@ -329,7 +330,10 @@ namespace Can_We_Fly
                 //The minimum visibility is also included alongside the prevailing visibility when the visibility in one 
                 // direction, which is not the prevailing visibility, is less than 1500 metres or less than 50% of the 
                 // prevailing visibility. A direction is also added as one of the eight points of the compass.
-
+                do
+                {
+                    
+                
                 if (MetarWords[count].Length == 4)
                 {
                     if (MetarWords[count] == "0000")
@@ -349,7 +353,7 @@ namespace Can_We_Fly
                     }
                     else if ((int.Parse(MetarWords[count]) > 0000) && (int.Parse(MetarWords[count]) < 9999))
                     {
-                        rchtxtbx_results.AppendText("Visibility is " + MetarWords[count] + "m\r\r");
+                        rchtxtbx_results.AppendText("Prevailing visibility is " + MetarWords[count] + "m\r");
                     }
                     else
                     {
@@ -358,8 +362,8 @@ namespace Can_We_Fly
                 }
                 else if (MetarWords[count].Length == 6)
                 {
-                    rchtxtbx_results.AppendText("Visibility is " + MetarWords[count].Substring(0, 4) + "m" +
-                                                " in the " + MetarWords[count].Substring(5, 2) + " direction.\r\r");
+                    rchtxtbx_results.AppendText("Minimum visibility is " + MetarWords[count].Substring(0, 4) + "m" +
+                                                " in the " + MetarWords[count].Substring(4, 2) + " direction.\r\r");
                 }
                 else
                 {
@@ -367,16 +371,19 @@ namespace Can_We_Fly
                 }
 
                 count++;
+                } while (utils.IsItNumber(MetarWords[count].Substring(0,1)));
 
                 #endregion
 
-                #region present_weather
+            }
+
+            #region present_weather
 
                 rchtxtbx_results.SelectionFont =
                     new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
                 rchtxtbx_results.AppendText("Present Weather\r");
                 rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
-            }
+            
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////
             /// Present Weather (Constructed sequentially):               
@@ -391,62 +398,46 @@ namespace Can_We_Fly
             ///////////////////////////////////////////////////////////////////////////////////////////////////////
             //-RA
 
-           int index = 0;
+            int index = 0;
             string qualifier = "Moderate ";
-            bool flag = false;
 
-            
+
             if ((MetarWords[count].Substring(index, 1) == "+") || (MetarWords[count].Substring(index, 1) == "-"))
             {
                 switch (MetarWords[count].Substring(index, 1))
                 {
                     case "+":
                         qualifier = "Heavy ";
-                        flag = true;
                         index++;
                         break;
                     case "-":
                         qualifier = "Light ";
-                        flag = true;
                         index++;
                         break;
                 }
             }
-            //is it cloud or still present weather
-            else if ((!flag) && (MetarWords[count].Length == 2))
+
+            rchtxtbx_results.AppendText(qualifier);
+
+            do //loop round all items.
             {
-                do
-                {
-                    rchtxtbx_results.AppendText(qualifier +
-                                                PresentWeather.GetPresentWeather(MetarWords[count].Substring(index, 2)) + "\r\r");
-                    index += 2;
-                } while (index < MetarWords[count].Length);
+                rchtxtbx_results.AppendText(PresentWeather.GetPresentWeather(MetarWords[count].Substring(index, 2)));
+                index += 2;
+            } while (index + 1 < MetarWords[count].Length);
 
-                count++;
-            }
+            rchtxtbx_results.AppendText("\r\r");
 
+            count++;
 
-            if (flag)
-            {
-                do
-                {
-                    rchtxtbx_results.AppendText(qualifier + 
-                        PresentWeather.GetPresentWeather(MetarWords[count].Substring(index, 2)) + "\r\r");
-                    index += 2;
-                } while (index < MetarWords[count].Length);
-
-                count++;
-
-            }
 
 
             #endregion
-            
+
 
             #region Cloud
 
             //find the pressure and come one back to find temperature
-            int pressurecount = FindPressure(MetarWords);
+            int pressurecount = utils.FindPressure(MetarWords);
 
             int cloudCount = pressurecount - 1 - count;
 
@@ -478,9 +469,9 @@ namespace Can_We_Fly
                 for (int i = 0; i < cloudCount; i++)
                 {
                     //if (Clouds.CheckIfClouds(MetarWords[count + i]))
-                  // {
-                        rchtxtbx_results.AppendText(Clouds.GetCloudInfo(MetarWords[count + i]) + "\r");
-                   // }
+                    // {
+                    rchtxtbx_results.AppendText(Clouds.GetCloudInfo(MetarWords[count + i]) + "\r");
+                    // }
                 }
 
                 rchtxtbx_results.AppendText("\r");
@@ -521,7 +512,7 @@ namespace Can_We_Fly
             }
 
             #endregion
-            
+
 
 
             #region temp_dew_point
@@ -530,7 +521,7 @@ namespace Can_We_Fly
             rchtxtbx_results.AppendText("Temperature and Dew Point\r");
             rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
-            
+
 
 
             //////////////////////////////////////////////////////////////////////////
@@ -627,13 +618,13 @@ namespace Can_We_Fly
             {
                 string QNH = MetarWords[pressurecount].Substring(1);
 
-                if (MetarWords[pressurecount].Substring(0,1) == "Q")
+                if (MetarWords[pressurecount].Substring(0, 1) == "Q")
                 {
                     rchtxtbx_results.AppendText("QNH = " + QNH + "hPa\r\r");
                 }
                 else if (MetarWords[pressurecount].Substring(0, 1) == "A")
                 {
-                    rchtxtbx_results.AppendText("QNH = " + QNH +"InHg\r\r");
+                    rchtxtbx_results.AppendText("QNH = " + QNH + "InHg\r\r");
                 }
                 else
                 {
@@ -646,24 +637,29 @@ namespace Can_We_Fly
             }
 
 
-            #region Trend Forecast (2 hours from time of observation) 
+            #region Trend Forecast (2 hours from time of observation)
 
-            //pressurecount
-            count = 1;
-            int TrendCount = 0; 
-
-            do
+            if (pressurecount + 1 < MetarWords.Length)
             {
-                TrendCount = pressurecount + count;
-                rchtxtbx_results.AppendText(TrendForecast.CheckTrendForecast(MetarWords[TrendCount]));
-                count++;
+                count = 1;
+                int TrendCount = 0;
 
-            } while (TrendCount+1 < MetarWords.Length);
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Underline | FontStyle.Bold);
+                rchtxtbx_results.AppendText("Trend\r");
+                rchtxtbx_results.SelectionFont = new Font(rchtxtbx_results.SelectionFont, FontStyle.Regular);
 
-            
+                do
+                {
+                    TrendCount = pressurecount + count;
+                    rchtxtbx_results.AppendText(TrendForecast.CheckTrendForecast(MetarWords[TrendCount]));
+                    count++;
 
-            
-            
+                } while (TrendCount + 1 < MetarWords.Length);
+
+
+            }
+
+
             //BECMG
 
 
@@ -676,80 +672,5 @@ namespace Can_We_Fly
         }
 
         // Does METAR have the word CAVOK in it?
-        private static bool FindCAVOK(string[] data)
-        {
-            bool flag = false;
-            string stringToCheck1 = "CAVOK";
-
-            foreach (string s in data) // looking for Q
-            {
-                if (s.ToUpper().Contains(stringToCheck1))
-                {
-                    flag = true;
-                    break;
-                }
-            }
-
-            return flag;
-        }
-
-        private static bool InMaintenance(string[] data)
-        {
-            bool flag = false;
-            string stringToCheck1 = "$";
-
-            foreach (string s in data) // looking for $ 
-            {
-                if (s.ToUpper().Contains(stringToCheck1))
-                {
-                    flag = true;
-                    break;
-                }
-            }
-
-            return flag;
-        }
-
-        private static int FindPressure(string[] data)
-        {
-            bool flag = false;
-            int answer = 0;
-            string stringToCheck1 = "Q"; // Find the sea level pressure hectopascals, QNH.
-            string stringToCheck2 = "A"; // Find the sea level pressure  inches and hundredths, QNH.
-
-
-            foreach (string s in data) // looking for Q
-            {
-                if (s.Substring(0, 1).Contains(stringToCheck1))
-                {
-                    flag = true;
-                    break;
-                }
-                
-                answer++;
-            }
-
-            if (!flag) // Not found Q so look for Axxxx
-            {
-                //lots more items to look for here.
-                answer = 0;
-
-                foreach (string s in data)
-                {
-                   if ((s.Substring(0, 1).Contains(stringToCheck2))&&(!s.Contains("METAR")) && (!s.Contains("AUTO"))
-                       && (s.Length==5))     
-                    {
-                        flag = true;
-                        break;
-                    }
-
-                    answer++;
-                }
-            }
-
-            if (!flag) answer = 0;
-
-            return answer;
-        }
     }
 }
